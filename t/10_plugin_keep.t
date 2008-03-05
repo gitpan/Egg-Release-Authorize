@@ -80,6 +80,7 @@ ok my $value= $e->response->cookies->{aa}->value, q{$value= $e->response->cookie
 ok $s->logout, q{$s->logout};
 
 $ENV{HTTP_COOKIE}= "aa=$value";
+$e->request->{cookies}= undef;
 ok $s->is_login, q{$s->is_login};
 ok $s->logout, q{$s->logout};
 

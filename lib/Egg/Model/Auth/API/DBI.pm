@@ -2,7 +2,7 @@ package Egg::Model::Auth::API::DBI;
 #
 # Masatoshi Mizuno E<lt>lusheE<64>cpan.orgE<gt>
 #
-# $Id: DBI.pm 267 2008-02-24 05:26:56Z lushe $
+# $Id: DBI.pm 304 2008-03-05 12:11:35Z lushe $
 #
 use strict;
 use warnings;
@@ -37,12 +37,14 @@ sub _setup {
 sub restore_member {
 	my $self= shift;
 	my $id  = shift || croak __PACKAGE__. ' - I want user id.';
+warn "?????????????????????????????????";
 	my $sth = $$self->{restore_sth} ||= $self->__prepare
 	          ( $$self->e->model($self->dbi_label)->dbh, $self->statement );
 	my %bind;
 	$sth->execute($id);
 	$sth->bind_columns(\(@bind{map{$_}@{$sth->{NAME_lc}}}));
 	$sth->fetch || return 0;
+warn join "\n", map{"$_ = $bind{$_}"}keys %bind;
 	$self->_restore_result(\%bind);
 }
 sub _finish {

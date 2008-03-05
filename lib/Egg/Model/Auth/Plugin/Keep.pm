@@ -2,7 +2,7 @@ package Egg::Model::Auth::Plugin::Keep;
 #
 # Masatoshi Mizuno E<lt>lusheE<64>cpan.orgE<gt>
 #
-# $Id: Keep.pm 267 2008-02-24 05:26:56Z lushe $
+# $Id: Keep.pm 304 2008-03-05 12:11:35Z lushe $
 #
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ use Carp qw/ croak /;
 use Crypt::CBC;
 use Digest::SHA1 qw/ sha1_hex /;
 
-our $VERSION= '0.01';
+our $VERSION= '0.02';
 
 my @Items= qw/ __api_name ___user ___input_password /;
 
@@ -64,8 +64,9 @@ sub is_login {
 sub reset {
 	my($self)= @_;
 	my $name= $self->config->{plugin_keep}{cookie}{name};
-	$self->e->response->cookies->{$name}= { value=> "" }
-	                 if $self->e->response->cookies->{$name};
+	if ($self->e->request->cookies->{$name}) {
+		$self->e->response->cookies->{$name}= { value=> "", expires=> '-1d' };
+	}
 	$self->next::method;
 }
 sub __setup_data {

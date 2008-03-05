@@ -1,6 +1,6 @@
 ---
 name: Egg-Release-Authorize
-version: 0.01
+version: 0.02
 author:
   - 'Masatoshi Mizuno E<lt>lusheE<64>cpan.orgE<gt>'
 abstract: lib/Egg/Release/Authorize.pm
@@ -61,7 +61,7 @@ provides:
     version: 0.01
   Egg::Model::Auth::Plugin::Keep:
     file: lib/Egg/Model/Auth/Plugin/Keep.pm
-    version: 0.01
+    version: 0.02
   Egg::Model::Auth::Session::FileCache:
     file: lib/Egg/Model/Auth/Session/FileCache.pm
     version: 0.01
@@ -71,7 +71,7 @@ provides:
     file: lib/Egg/Model/Auth.pm
   Egg::Release::Authorize:
     file: lib/Egg/Release/Authorize.pm
-    version: 0.01
+    version: 0.02
 generated_by: Module::Build version 0.2808
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html

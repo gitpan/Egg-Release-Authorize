@@ -1,5 +1,8 @@
 Revision history for Perl extension .
 
+0.02  2008/03/05
+	- bugfix for Egg::Model::Auth::Plugin::Keep.
+
 0.01  Fri Feb 15 00:39:20 2008
 	- original version; created by Egg::Helper::Build::Module v3.00
 	   with module name Egg::Release::Authorize
