@@ -2,7 +2,7 @@ package Egg::Model::Auth::Plugin::Keep;
 #
 # Masatoshi Mizuno E<lt>lusheE<64>cpan.orgE<gt>
 #
-# $Id: Keep.pm 304 2008-03-05 12:11:35Z lushe $
+# $Id: Keep.pm 323 2008-04-17 12:41:11Z lushe $
 #
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ use Carp qw/ croak /;
 use Crypt::CBC;
 use Digest::SHA1 qw/ sha1_hex /;
 
-our $VERSION= '0.02';
+our $VERSION= '0.04';
 
 my @Items= qw/ __api_name ___user ___input_password /;
 
@@ -44,29 +44,41 @@ sub is_login {
 	my $self= shift;
 	if (my $session= $self->get_session) { return $self->next::method($session) }
 	my $c= $self->config->{plugin_keep};
-	my $crypt= $self->e->request->cookie_value($c->{cookie}{name})
-	        || return $self->next::method(1);
-	my $plain= $self->__keep_cbc->decrypt_hex($crypt)
-	        || return $self->next::method(1);
+	my $crypt= $self->e->request->cookie_value($c->{cookie}{name}) || return do {
+		$self->e->debug_out(__PACKAGE__. ' - Cookie data is empty.');
+		$self->next::method(1);
+	  };
+	my $plain= $self->__keep_cbc->decrypt_hex($crypt) || return do {
+		$self->e->debug_out(__PACKAGE__. ' - Data cannot be decrypt.');
+		$self->next::method(1);
+	  };
 	my %data;
 	(my $checksum, @data{@Items})= split $c->{delimiter}, $plain;
-	$self->api_list->{$data{__api_name}} || return $self->next::method(1);
+	$self->api_list->{$data{__api_name}} || return do {
+		$self->e->debug_out(__PACKAGE__. ' - There is no corresponding API.');
+		$self->next::method(1);
+	  };
 	my $api= $self->api($data{__api_name});
-	$api->valid_id($data{___user})
-	        || return $self->next::method(1);
-	$api->valid_password($data{___input_password})
-	        || return $self->next::method(1);
-	$checksum eq sha1_hex($c->{check_sum}. $data{___input_password})
-	        || return $self->next::method(1);
+	$api->valid_id($data{___user}) || return do {
+		$self->e->debug_out(__PACKAGE__. ' - The user name is bad.');
+		$self->next::method(1);
+	  };
+	$api->valid_password($data{___input_password}) || return do {
+		$self->e->debug_out(__PACKAGE__. ' - The password is bad.');
+		$self->next::method(1);
+	  };
+	$checksum eq sha1_hex($c->{check_sum}. $data{___input_password}) || return do {
+		$self->e->debug_out(__PACKAGE__. ' - The checksum is bad.');
+		$self->next::method(1);
+	  };
 	$data{___start_interval}= time- ($self->config->{interval}+ 60);
 	$self->next::method(\%data);
 }
-sub reset {
+sub remove_bind_id {
 	my($self)= @_;
-	my $name= $self->config->{plugin_keep}{cookie}{name};
-	if ($self->e->request->cookies->{$name}) {
-		$self->e->response->cookies->{$name}= { value=> "", expires=> '-1d' };
-	}
+	my $name= $self->config->{plugin_keep}{cookie}{name} || 'aa';
+	$self->e->response->cookies->{$name}= { value=> "", expires=> '-1d' }
+	      if $self->e->request->cookie_value($name);
 	$self->next::method;
 }
 sub __setup_data {
@@ -174,6 +186,8 @@ If the attestation session exists and doesn't exist, attestation information is
  acquired from Cookie, and the attestation session is revived.
 
 And, processing is passed to 'is_login' of L<Egg::Model::Auth::Base>.
+
+=head2 remove_bind_id
 
 =head2 reset
 

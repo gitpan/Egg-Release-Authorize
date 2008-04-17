@@ -1,5 +1,11 @@
 Revision history for Perl extension .
 
+0.04  2008/04/17
+	- Build.PL is abolished.
+
+0.03  2008/03/09
+	- bugfix for Egg::Model::Auth::Plugin::Keep.
+
 0.02  2008/03/05
 	- bugfix for Egg::Model::Auth::Plugin::Keep.
 

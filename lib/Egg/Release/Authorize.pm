@@ -2,12 +2,12 @@ package Egg::Release::Authorize;
 #
 # Masatoshi Mizuno E<lt>lusheE<64>cpan.orgE<gt>
 #
-# $Id: Authorize.pm 267 2008-02-24 05:26:56Z lushe $
+# $Id: Authorize.pm 323 2008-04-17 12:41:11Z lushe $
 #
 use strict;
 use warnings;
 
-our $VERSION = '0.02';
+our $VERSION = '0.04';
 
 1;
 
