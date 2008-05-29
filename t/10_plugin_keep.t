@@ -25,7 +25,7 @@ my $ciper= Crypt::Blowfish->require ? 'Blowfish'
 	plan skip_all=> "The Ciper module is not installed.";
   };
 
-plan tests=> 25;
+plan tests=> 23;
 
 my $tool= Egg::Helper->helper_tools;
 
@@ -84,10 +84,6 @@ $e->request->{cookies}= undef;
 ok $s->is_login, q{$s->is_login};
 ok $s->logout, q{$s->logout};
 
-ok $s->is_login, q{$s->is_login};
-ok $s->logout, q{$s->logout};
-
-delete $e->request->cookies->{aa};
 ok ! $s->is_login, q{! $s->is_login};
 
 }

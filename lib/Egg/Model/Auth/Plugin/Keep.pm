@@ -2,7 +2,7 @@ package Egg::Model::Auth::Plugin::Keep;
 #
 # Masatoshi Mizuno E<lt>lusheE<64>cpan.orgE<gt>
 #
-# $Id: Keep.pm 323 2008-04-17 12:41:11Z lushe $
+# $Id: Keep.pm 344 2008-05-29 19:54:45Z lushe $
 #
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ use Carp qw/ croak /;
 use Crypt::CBC;
 use Digest::SHA1 qw/ sha1_hex /;
 
-our $VERSION= '0.04';
+our $VERSION= '0.05';
 
 my @Items= qw/ __api_name ___user ___input_password /;
 
@@ -54,7 +54,7 @@ sub is_login {
 	  };
 	my %data;
 	(my $checksum, @data{@Items})= split $c->{delimiter}, $plain;
-	$self->api_list->{$data{__api_name}} || return do {
+	($data{__api_name} and $self->api_list->{$data{__api_name}}) || return do {
 		$self->e->debug_out(__PACKAGE__. ' - There is no corresponding API.');
 		$self->next::method(1);
 	  };
@@ -77,8 +77,8 @@ sub is_login {
 sub remove_bind_id {
 	my($self)= @_;
 	my $name= $self->config->{plugin_keep}{cookie}{name} || 'aa';
-	$self->e->response->cookies->{$name}= { value=> "", expires=> '-1d' }
-	      if $self->e->request->cookie_value($name);
+	$self->e->request->cookie_more( $name => 'deny' );
+	$self->e->response->cookies->{$name}= { value=> "", expires=> '-1d' };
 	$self->next::method;
 }
 sub __setup_data {
