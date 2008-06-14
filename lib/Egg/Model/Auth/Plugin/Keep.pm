@@ -2,7 +2,7 @@ package Egg::Model::Auth::Plugin::Keep;
 #
 # Masatoshi Mizuno E<lt>lusheE<64>cpan.orgE<gt>
 #
-# $Id: Keep.pm 344 2008-05-29 19:54:45Z lushe $
+# $Id: Keep.pm 347 2008-06-14 18:57:53Z lushe $
 #
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ use Carp qw/ croak /;
 use Crypt::CBC;
 use Digest::SHA1 qw/ sha1_hex /;
 
-our $VERSION= '0.05';
+our $VERSION= '0.06';
 
 my @Items= qw/ __api_name ___user ___input_password /;
 
@@ -18,15 +18,14 @@ sub _setup {
 	my($class, $e)= @_;
 	my $c= $class->config->{plugin_keep}
 	       || die q{I want setup 'plugin_keep'.};
-	$c->{check_sum}  ||= '%qwe^098&mnb*asd(765';
+	$c->{check_sum}  ||= 'd08bdd7994fb7af48c70138d6a77a6b2010c8998';
 	length($c->{check_sum}) < 20 and die q{'check_sum' is too short.};
-	$c->{check_sum}=~s{^(.{40}).*} [$1] if length($c->{check_sum})> 40;
 	$c->{delimiter}  ||= ' : ';
 	$c->{param_name} ||= '__auto_login';
 	my $cookie= $c->{cookie} ||= {};
-	$cookie->{name}    ||= 'aa';
+	$cookie->{name}    ||= 'keep';
 	$cookie->{path}    ||= '/';
-	$cookie->{expires} ||= '+7D';
+	$cookie->{expires} ||= '+7d';
 	my $cbc= $c->{crypt} || die q{I want setup 'plugin_keep' of 'crypt'.};
 	$cbc->{cipher}  || die q{I want setup 'crypt' of 'cipher'.};
 	$cbc->{key}     || die q{I want setup 'crypt' of 'key'.};
@@ -79,6 +78,7 @@ sub remove_bind_id {
 	my $name= $self->config->{plugin_keep}{cookie}{name} || 'aa';
 	$self->e->request->cookie_more( $name => 'deny' );
 	$self->e->response->cookies->{$name}= { value=> "", expires=> '-1d' };
+	$self->e->debug_out(__PACKAGE__. ' - Cookie was removed.');
 	$self->next::method;
 }
 sub __setup_data {
@@ -209,7 +209,7 @@ Masatoshi Mizuno E<lt>lusheE<64>cpan.orgE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2008 Bee Flag, Corp. E<lt>L<http://egg.bomcity.com/>E<gt>, All Rights Reserved.
+Copyright (C) 2008 Bee Flag, Corp. E<lt>L<http://egg.bomcity.com/>E<gt>.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself, either Perl version 5.8.6 or,

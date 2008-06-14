@@ -75,11 +75,11 @@ can_ok $s, 'login_check';
   ok my $data= $s->login_check, q{my $data= $s->login_check};
   isa_ok $data, 'HASH';
 
-ok $e->response->cookies->{aa}, q{$e->response->cookies->{aa}};
-ok my $value= $e->response->cookies->{aa}->value, q{$value= $e->response->cookies->{aa}->value};
+ok $e->response->cookies->{keep}, q{$e->response->cookies->{keep}};
+ok my $value= $e->response->cookies->{keep}->value, q{$value= $e->response->cookies->{keep}->value};
 ok $s->logout, q{$s->logout};
 
-$ENV{HTTP_COOKIE}= "aa=$value";
+$ENV{HTTP_COOKIE}= "keep=$value";
 $e->request->{cookies}= undef;
 ok $s->is_login, q{$s->is_login};
 ok $s->logout, q{$s->logout};

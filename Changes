@@ -1,5 +1,8 @@
 Revision history for Perl extension .
 
+0.06  2008/06/15
+	- fixed for Egg::Model::Auth::Plugin::Keep.
+
 0.05  2008/05/30
 	- bugfix for Egg::Model::Auth::Plugin::Keep.
 

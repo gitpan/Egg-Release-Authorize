@@ -7,7 +7,7 @@ abstract_from 'lib/Egg/Release/Authorize.pm';
 author        'Masatoshi Mizuno E<lt>lusheE<64>cpan.orgE<gt>';
 license       'perl';
 
-requires 'Egg::Release'            => '3.01';
+requires 'Egg::Release'            => '3.14';
 requires 'Egg::Plugin::SessionKit' => '3.02';
 requires 'Egg::Release::DBI'       => '0.02';
 requires 'Egg::Release::DBIC'      => '0.02';
